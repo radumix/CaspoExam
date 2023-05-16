@@ -1,0 +1,65 @@
+
+
+  <mat-card class="example-card mat-elevation-z0">
+  
+    <mat-card-content>
+   
+        <table class="example-full-width" cellspacing="0">
+            <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>Country</mat-label>
+                    <mat-select (selectionChange)="selectCountry($event)">
+                      <mat-option value="1">USA</mat-option>
+                      <mat-option value="2">JAPAN</mat-option>
+                      <mat-option value="3">UK</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+        </td>
+            <td>
+                <mat-form-field class="input-text">
+                    <mat-label>City</mat-label>
+                    <input matInput [(ngModel)]="city" placeholder="City">
+                
+                  </mat-form-field>
+        </td>
+          </tr>
+    
+          <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>Month</mat-label>
+                    <mat-select (selectionChange)="selectMonth($event)">
+                      <mat-option value="1">JANUARY</mat-option>
+                      <mat-option value="2">FEBRUARY</mat-option>
+                      <mat-option value="3">MARCH</mat-option>
+                      <mat-option value="4">APRIL</mat-option>
+                      <mat-option value="5">MAY</mat-option>
+                      <mat-option value="6">JUNE</mat-option>
+                      <mat-option value="7">JULY</mat-option>
+                      <mat-option value="8">AUGUST</mat-option>
+                      <mat-option value="9">SEPTEMBER</mat-option>
+                      <mat-option value="10">OCTOBER</mat-option>
+                      <mat-option value="11">NOVEMBER</mat-option>
+                      <mat-option value="12">DECEMBER</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+        </td>
+            <td>
+                <mat-form-field class="input-text">
+                    <mat-label>Budget</mat-label>
+                    <input matInput [(ngModel)]="budget" placeholder="Budget">
+                
+                  </mat-form-field>
+        </td>
+          </tr>
+    
+    
+        </table>
+
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button type="button" mat-raised-button color="warn" (click)="close()">Cancel</button>
+      <button type="button" mat-raised-button color="primary" (click)="submit()">SAVE</button>
+    </mat-card-actions>
+  </mat-card>

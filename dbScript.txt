@@ -1,0 +1,206 @@
+﻿
+--tbl_budget
+
+USE [caspoexam]
+GO
+
+/****** Object:  Table [dbo].[tbl_budget]    Script Date: 05/17/2023 12:21:31 am ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_budget](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[country] [int] NULL,
+	[city] [nvarchar](255) NULL,
+	[quarter] [int] NULL,
+	[month] [int] NULL,
+	[budget] [nvarchar](255) NULL,
+	[create_date] [datetime] NULL CONSTRAINT [DF_tbl_budget_create_date]  DEFAULT (getdate())
+) ON [PRIMARY]
+
+GO
+
+
+--tbl_country
+USE [caspoexam]
+GO
+
+/****** Object:  Table [dbo].[tbl_country]    Script Date: 05/17/2023 12:22:33 am ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_country](
+	[country_id] [int] IDENTITY(1,1) NOT NULL,
+	[country] [nvarchar](100) NULL
+) ON [PRIMARY]
+
+GO
+
+--tbl_month
+USE [caspoexam]
+GO
+
+/****** Object:  Table [dbo].[tbl_month]    Script Date: 05/17/2023 12:23:53 am ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_month](
+	[month_id] [int] IDENTITY(1,1) NOT NULL,
+	[month] [nvarchar](50) NULL,
+	[quarter_id] [int] NULL
+) ON [PRIMARY]
+
+GO
+
+
+--tbl_quarter
+USE [caspoexam]
+GO
+
+/****** Object:  Table [dbo].[tbl_quarter]    Script Date: 05/17/2023 12:24:27 am ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_quarter](
+	[quarter_id] [int] IDENTITY(1,1) NOT NULL,
+	[quarter] [nvarchar](50) NULL
+) ON [PRIMARY]
+
+GO
+
+
+--stored procedure
+
+--[dbo].[sp_add_budget]
+USE [caspoexam]
+GO
+
+/****** Object:  StoredProcedure [dbo].[sp_add_budget]    Script Date: 05/17/2023 12:25:12 am ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		RADUMIX
+-- Create date: 05/16/2023
+-- Description:	TESTMENOW
+-- =============================================
+CREATE PROCEDURE [dbo].[sp_add_budget]
+	@country int,
+	@month int,
+	@city nvarchar(255),
+	@budget nvarchar(255)
+AS
+BEGIN
+	
+	insert into [caspoexam].[dbo].[tbl_budget] (
+      [country]
+      ,[city]
+      ,[quarter]
+      ,[month]
+      ,[budget])
+	  VALUES(@country, @city, (select TOP 1 [quarter_id] from [caspoexam].[dbo].[tbl_month] where [month_id] = @month), @month, @budget)
+   
+END
+
+GO
+
+
+
+---[dbo].[sp_get_budget]
+USE [caspoexam]
+GO
+
+/****** Object:  StoredProcedure [dbo].[sp_get_budget]    Script Date: 05/17/2023 12:26:07 am ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:		RADUMIX
+-- Create date: 05/16/2023
+-- Description:	TESTMENOW
+-- =============================================
+CREATE PROCEDURE [dbo].[sp_get_budget]
+AS
+BEGIN
+	
+	  SELECT  b.[id]
+      ,(SELECT c.[country]
+  FROM [caspoexam].[dbo].[tbl_country] c where c.country_id = b.[country]) as [country]
+      ,b.[city]
+      ,(SELECT q.[quarter]
+  FROM [caspoexam].[dbo].[tbl_quarter] q where q.[quarter_id] = b.[quarter]) as [quarter]
+      ,(SELECT m.[month]
+  FROM [caspoexam].[dbo].[tbl_month] m where m.month_id = b.[month]) as [month]
+      ,b.[budget]
+      ,b.[create_date]
+     FROM [caspoexam].[dbo].[tbl_budget] b
+   
+END
+
+
+GO
+
+
+
+---[dbo].[sp_get_budget_by_cq]
+USE [caspoexam]
+GO
+
+/****** Object:  StoredProcedure [dbo].[sp_get_budget_by_cq]    Script Date: 05/17/2023 12:26:41 am ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+-- =============================================
+-- Author:		RADUMIX
+-- Create date: 05/16/2023
+-- Description:	TESTMENOW
+-- =============================================
+CREATE PROCEDURE [dbo].[sp_get_budget_by_cq]
+	@country int,
+	@quarter int
+AS
+BEGIN
+	
+	  SELECT  b.[id]
+      ,(SELECT c.[country]
+  FROM [caspoexam].[dbo].[tbl_country] c where c.country_id = b.[country]) as [country]
+      ,b.[city]
+      ,(SELECT q.[quarter]
+  FROM [caspoexam].[dbo].[tbl_quarter] q where q.[quarter_id] = b.[quarter]) as [quarter]
+      ,(SELECT m.[month]
+  FROM [caspoexam].[dbo].[tbl_month] m where m.month_id = b.[month]) as [month]
+      ,b.[budget]
+      ,b.[create_date]
+     FROM [caspoexam].[dbo].[tbl_budget] b where b.country = @country and b.[quarter] = @quarter
+   
+END
+
+
+
+GO
+
+
